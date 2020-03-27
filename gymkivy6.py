@@ -9,7 +9,7 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
 
-import datetime
+import datetime as dt
 import os
 
 kivy.require("1.11.1")
@@ -18,19 +18,26 @@ kivy.require("1.11.1")
 #              GymUser Class                   #
 ################################################
 
-card = '222000000002222'    
-
+   
 class GymUser:
-    booking_details = [None,None,None,None]
-    current_gym_users = 0
+    card_scanned = ''
+    sutdid_input = ''
+    machine_choice = ''
+    booking_dict = {'Bench Machine':[],'Squat Machine':[],'Deadlift Machine':[]}
+    current_gym_users = 0                   # double counts 1 user with 2 machine bookings
+    b_users = len(booking_dict['Bench Machine'])
+    dl_users = len(booking_dict['Deadlift Machine'])
+    s_users = len(booking_dict['Squat Machine'])
     
-    def create_user(self, card, sutdid):
+    def create_user(self,card,sutdid,machine,duration,end_time):
         self.card = card
         self.sutdid = sutdid
-        self.machine = ''
-        self.duration = ''
+        self.machine = machine
+        self.duration = duration
+        self.end_time = end_time
         
         GymUser.current_gym_users += 1
+        print('Gym User Created!\ncurrent_gym_users: ',GymUser.current_gym_users)
     
     @classmethod
     def from_string(cls, profile_str):
@@ -43,40 +50,32 @@ class GymUser:
         
         card, sutdid = profile_str.split(',')
         return cls(card,sutdid)
-    
-class SquatUser(GymUser):
-    squat_users = 0
-    '''
-    Work in progress
-    '''
-    
-    def __init__(self,card,sutdid,duration):
-        super().__init__(card,sutdid)        
-        self.duration = duration
-        
-        squat_users += 1
+
+'''
+different booking lists
+display queue
+'''    
+
         
 ################################################
 #                   SCREENS                    #
 ################################################
 
 class WindowManager(ScreenManager):
-    booking_details = ['','','','']  
+    pass
             
-        
-        
-        
-class HomePage(Screen):
+    
+class HomePage(Screen, GymUser):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
     def next_button(self):
-        # function to scan card on RFID reader
-        pass
+        # simulate the scanning of the card
+        # error message if unsuccessful scan
+        GymUser.card_scanned = self.ti_next.text
     
     
-        
-class IDPage(Screen):   
+class IDPage(Screen, GymUser):   
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
                
@@ -92,16 +91,16 @@ class IDPage(Screen):
                 line = f.readline()
                 while line:
                     profile = line.split(',')
-                    # print(profile)
-                    if card == profile[0]:
+                    print(profile)
+                    if GymUser.card_scanned == profile[0]:
                         self.ti_card.text = profile[0]
-                        self.ti_sutdid.text = profile[1]                      
+                        self.ti_sutdid.text = profile[1].rstrip()                     
                         break
                     line = f.readline()              
         else:
-            f = open("prev_profiles.txt","w")
-            f.close()
-        
+            # should show error message, 'Profile Not Found'
+            self.ti_card.text = GymUser.card_scanned
+                    
         
                
             
@@ -111,10 +110,10 @@ class IDPage(Screen):
         Clears the entries for Card & SUTD ID
         '''
         
-        card = self.ti_card.text
-        sutdid = self.ti_sutdid.text
+        GymUser.card_scanned = self.ti_card.text
+        GymUser.sutdid_input = self.ti_sutdid.text
         
-        if card == '' or sutdid == '':
+        if GymUser.card_scanned == '' or GymUser.sutdid_input == '':
             return
         
         # create new profile if non-existent
@@ -123,14 +122,14 @@ class IDPage(Screen):
         exist = False
         while line:
             profile = line.split(',')
-        # profile elements are strings
-            if card == profile[0]:
+            # profile elements are strings
+            if GymUser.card_scanned == profile[0]:
                 exist = True
                 break
             else:
                 line = f.readline()    
         if exist == False:
-            f.write(f"{card},{sutdid}" + '\n')
+            f.write(f"{GymUser.card_scanned},{GymUser.sutdid_input}" + '\n')
         f.close()
                     
         # clear entries
@@ -141,53 +140,67 @@ class IDPage(Screen):
         
         
 class MachinePage(Screen, GymUser):
-    machine_choice = ''
+    
+    def change_bcolor(self):
+        self.ids['dl_button'].background_color = 1,1,1,1
+        self.ids['b_button'].background_color = 0,1,0,1
+        self.ids['s_button'].background_color = 1,1,1,1
+        GymUser.machine_choice = 'Bench Machine'
     
     def change_dlcolor(self):
         self.ids['dl_button'].background_color = 0,1,0,1
         self.ids['b_button'].background_color = 1,1,1,1
         self.ids['s_button'].background_color = 1,1,1,1
-        MachinePage.machine_choice = 'deadlift'
-        
-    def change_bcolor(self):
-        self.ids['dl_button'].background_color = 1,1,1,1
-        self.ids['b_button'].background_color = 0,1,0,1
-        self.ids['s_button'].background_color = 1,1,1,1
-        MachinePage.machine_choice = 'bench'
+        GymUser.machine_choice = 'Deadlift Machine'
         
     def change_scolor(self):
         self.ids['dl_button'].background_color = 1,1,1,1
         self.ids['s_button'].background_color = 0,1,0,1
         self.ids['b_button'].background_color = 1,1,1,1
-        MachinePage.machine_choice = 'squat'
+        GymUser.machine_choice = 'Squat Machine'
             
     def book_button(self):
-        
-        # take TextInput from ti_duration
-        # booking_list = card + sutdid + machine_choice + ti_duration
-        
-        machine_choice = MachinePage.machine_choice
-        duration = self.ids.ti_duration.text
-        
-        # create new GymUser object
-        with open("prev_profiles.txt","r") as f:
-            line = f.readline()
-            while line:
-                profile = line.split(',')
-                if card == profile[0]:
-                    sutdid = profile[1].rstrip()
-                    break
-                line = f.readline()
-        
-        new_user = GymUser()
-        GymUser.create_user(new_user,card,sutdid)
-        GymUser.booking_details = [card, sutdid, machine_choice, duration]
                
-        print('Machine print:', GymUser.booking_details)
+        machine_choice = GymUser.machine_choice
+        duration = int(self.ids.ti_duration.text)
+        card = GymUser.card_scanned
+        sutdid = GymUser.sutdid_input
+
+        # create new GymUser object
+        end_time = dt.datetime.now() + dt.timedelta(minutes = duration)
+        new_user = GymUser()
+        GymUser.create_user(new_user,card,sutdid,machine_choice,duration,end_time)
+        
+        # check whether got previous bookings by same user
+        if no_previous_bookings(new_user, machine_choice) == False:
+            print('Error Message that got previous bookings')
+            return 
+        
+        # add user to the machine's booking_list
+        GymUser.booking_dict[machine_choice].append(new_user)
+        print(GymUser.booking_dict[machine_choice])
+        
+#         if machine_choice == 'Bench Machine':
+#             GymUser.booking_list[0].append(new_user)
+#             print('Bench booking_list:', GymUser.booking_list[0])
+#         elif machine_choice == 'Deadlift Machine':
+#             GymUser.booking_list[1].append(new_user)
+#             print('DL booking_list:', GymUser.booking_list[1])
+#         elif machine_choice == 'Squat Machine':
+#             GymUser.booking_list[2].append(new_user)
+#             print('Squat booking_list:', GymUser.booking_list[2])
         
         
+        # reset MachinePage
+        self.ids.ti_duration.text = ''
+        self.ids['dl_button'].background_color = 1,1,1,1
+        self.ids['s_button'].background_color = 1,1,1,1
+        self.ids['b_button'].background_color = 1,1,1,1
         
-        
+def no_previous_bookings(user, machine_choice):
+    check = GymUser.booking_dict[machine_choice]
+    
+    
 class QueuePage(Screen, GymUser):
     booking_notice = StringProperty()
     
@@ -196,11 +209,34 @@ class QueuePage(Screen, GymUser):
         self.booking_notice = 'Hello!'
                 
     def print_booking(self):
-        details = GymUser.booking_details
-        sutdid = details[1]
-        machine = details[2]
-        duration = details[3]
-        self.booking_notice = "{} has booked {} for {} mins".format(sutdid,machine,duration)
+        # access last booking in the machine's booking_list
+        if GymUser.machine_choice == 'Bench Machine':
+            booking_list = GymUser.booking_list[0]
+        elif GymUser.machine_choice == 'Deadlift Machine':
+            booking_list = GymUser.booking_list[1]
+        elif GymUser.machine_choice == 'Squat Machine':
+            booking_list = GymUser.booking_list[2]
+        
+        n = len(booking_list)
+        user = booking_list[n-1]
+        sutdid = user.sutdid
+        machine = user.machine
+        duration = user.duration
+                
+        # initialise start time
+        if n == 0:
+            start_time = dt.datetime.now()
+        else:
+            # refer to last booking's end_time
+            start_time = booking_list[n-2].end_time
+        
+        # convert datetime object to a string that can be formatted
+        start_str = dt.datetime.strftime(start_time, '%H:%M')
+        
+        end_time = start_time + dt.timedelta(minutes = duration)
+        end_str = dt.datetime.strftime(end_time, '%H:%M')
+        
+        self.booking_notice = "{} has booked the {} for {} mins\n Your session is from {} to {}".format(sutdid,machine,duration,start_str, end_str)
         
             
     
@@ -208,9 +244,6 @@ class QueuePage(Screen, GymUser):
 class GymApp(App):
     def build(self):             
         return kv    
-        
-        
-        
         
 kv = Builder.load_file("gym4.kv")
     
