@@ -1,0 +1,40 @@
+#:import rgba kivy.utils.get_color_from_hex
+
+
+<HomeScreen>:
+    
+    FloatLayout:
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":0.8, "left":1}
+            size_hint: 1, 0.3
+            canvas:
+                Color:
+                    rgba: utils.get_color_from_hex("#6200EE")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Label:
+                font_size: 150
+                text:"GymNow"
+        
+        GridLayout:
+            rows: 1
+            pos_hint:{"top":0.5, "left":1}
+            size_hint:1, 0.1
+            Label:
+                font_size: 35
+                text:"Place Card on Reader to Begin"
+                     
+        Button:
+            pos_hint:{"center_x": 0.5, "top":0.4}
+            size_hint: 0.3,0.2
+            background_normal: ''
+            background_color: rgba("#6200EE")
+            colour:0,0,0,1
+            halign: "center"
+            font_size: 37
+            text:"Get Started!"
+            on_press:
+                app.change_screen("ID_screen")
+                root.next_button()

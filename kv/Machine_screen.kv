@@ -1,0 +1,90 @@
+
+<MachineScreen>
+    FloatLayout:
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":1, "center_x":0.5}
+            size_hint: 1, 0.1
+            canvas:
+                Color:
+                    rgba: utils.get_color_from_hex("#6200EE")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Label:
+                font_size: 70 
+                text:"GymNow"
+        
+        ImageButton:
+            source: "Icons/Home.png"
+            pos_hint: {"top":1, "x":0.9}
+            size_hint: 0.1, 0.1
+            allow_stretch: True
+            on_release:
+                app.change_screen("Home_screen")
+                
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":0.85, "center_x":0.5}
+            size_hint: 0.3, 0.2
+            Label:
+                font_size: 50
+                text: "Please choose your machine:"
+  
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":0.65, "x":0.05}
+            size_hint: 0.3, 0.2
+            
+            Button:
+                id: dl_button
+                text:"Deadlift"
+                font_size: 50
+                on_press:
+                    root.change_dlcolor()
+                    
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":0.65, "x":0.35}
+            size_hint: 0.3, 0.2
+
+            Button:
+                id: b_button
+                text:"Bench"
+                font_size: 50
+                on_press:
+                    root.change_bcolor()
+                    
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":0.65, "x":0.65}
+            size_hint: 0.3, 0.2
+
+            Button:
+                id: s_button
+                text:"Squat"
+                font_size:50
+                on_press:
+                    root.change_scolor()
+                    
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":0.3, "center_x":0.5}
+            size_hint: 0.3, 0.2
+            
+            Button:
+                id: next_button
+                text:"Next"
+                font_size: 50
+                on_press:
+                    root.check_machine_choice()
+                
+
+                    
+
+            
+     
+                
+        
+                
+    
