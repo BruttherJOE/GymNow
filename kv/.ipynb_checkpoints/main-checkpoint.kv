@@ -1,0 +1,26 @@
+#:include kv/Home_screen.kv
+#:include kv/ID_screen.kv
+#:include kv/Profiles_screen.kv
+#:include kv/Machine_screen.kv
+#:include kv/Queue_screen.kv
+GridLayout:
+    cols: 1
+    ScreenManager:
+        id: screen_manager
+        HomeScreen:
+            name: "Home_screen"
+            id: Home_screen
+        IDScreen:
+            name: "ID_screen"
+            id: ID_screen
+        ProfilesScreen:
+            name: "Profiles_screen"
+            id: Profiles_screen
+        MachineScreen:
+            name: "Machine_screen"
+            id: Machine_screen
+        QueueScreen: 
+            name: "Queue_screen"
+            id: Queue_screen
+              
+        

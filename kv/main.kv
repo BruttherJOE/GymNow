@@ -1,0 +1,96 @@
+#:include kv/Home_screen.kv
+#:include kv/ID_screen.kv
+#:include kv/Machine_screen.kv
+#:include kv/Queue_screen.kv
+#:include kv/Duration_screen.kv
+GridLayout:
+    cols: 1
+    ScreenManager:
+        id: screen_manager
+        HomeScreen:
+            name: "Home_screen"
+            id: Home_screen
+        IDScreen:
+            name: "ID_screen"
+            id: ID_screen
+        MachineScreen:
+            name: "Machine_screen"
+            id: Machine_screen
+        DurationScreen:
+            name: "Duration_screen"
+            id: Duration_screen
+        QueueScreen: 
+            name: "Queue_screen"
+            id: Queue_screen
+            
+            
+##-----For Error Popups-----##
+            
+<P1>:
+    Label:
+        text: "Please input Card No. or SUTD ID"
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":1}
+        text_size: self.size
+        halign: 'center'
+        valign: 'center'
+        font_size: 20
+
+    Label:
+        text: "Press Outside to Close"
+        size_hint: 0.8, 0.2
+        pos_hint: {"x":0.1, "y":0.1}
+        font_size:20
+
+        
+<P2>:
+    Label:
+        text: "Please choose machine"
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":1}
+        text_size: self.size
+        halign: 'center'
+        valign: 'center'
+        font_size: 20
+
+    Label:
+        text: "Press Outside to Close"
+        size_hint: 0.8, 0.2
+        pos_hint: {"x":0.1, "y":0.1}
+        font_size:20
+        
+<P3>:
+    Label:
+        text: "Please enter duraton that is nonzero and < 20"
+        size_hint: 0.6, 0.3
+        pos_hint: {"x":0.2, "top":1}
+        text_size: self.size
+        halign: 'center'
+        valign: 'center'
+        font_size: 20
+
+    Label:
+        text: "Press Outside to Close"
+        size_hint: 0.8, 0.2
+        pos_hint: {"x":0.1, "y":0.1}
+        font_size:20
+        
+<P4>:
+    Label:
+        text: "You have made a previous booking or a concurrent booking"
+        text_size: self.size
+        halign: 'center'
+        valign: 'center'
+        size_hint: 0.6, 0.3
+        pos_hint: {"x":0.2, "top":1}
+        font_size: 20
+
+    Label:
+        text: "Press Outside to Close"
+        size_hint: 0.8, 0.2
+        pos_hint: {"x":0.1, "y":0.1}
+        font_size:20
+        
+
+              
+        

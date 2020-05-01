@@ -1,0 +1,23 @@
+<DeadLiftQueueScreen>
+    FloatLayout:
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":1, "center_x":0.5}
+            size_hint: 1, 0.1
+            canvas:
+                Color:
+                    rgba: utils.get_color_from_hex("#6200EE")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Label:
+                font_size: 70 
+                text:"GymNow"
+        
+        ImageButton:
+            source: "Icons/Close.png"
+            pos_hint: {"top":1, "x":0.9}
+            size_hint: 0.1, 0.1
+            allow_stretch: True
+            on_release:
+                app.change_screen("Home_screen")

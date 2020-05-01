@@ -1,0 +1,98 @@
+#:import rgba kivy.utils.get_color_from_hex
+
+<BackgroundColor@Widget>
+    background_normal: ""
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#6200EE")
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            
+<BackgroundLabel@Label+BackgroundColor>
+
+
+<QueueScreen>
+    FloatLayout:
+        GridLayout:
+            rows: 1
+            pos_hint: {"top":1, "center_x":0.5}
+            size_hint: 1, 0.1
+            canvas:
+                Color:
+                    rgba: utils.get_color_from_hex("#6200EE")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Label:
+                font_size: 70 
+                text:"GymNow"
+                
+        ImageButton:
+            source: "Icons/Close.png"
+            pos_hint: {"top":1, "x":0.9}
+            size_hint: 0.1, 0.1
+            allow_stretch: True
+            on_release:
+                app.change_screen("Home_screen")
+                    
+        GridLayout:
+            cols: 1
+            pos_hint: {"top":0.8, "left":1}
+            size_hint: 1, 0.1
+            
+            Label:
+                font_size: 30 
+                text:root.booking_notice
+
+                
+                
+        GridLayout:
+            cols: 5
+            pos_hint: {"top":0.6, "left":1}
+            size_hint: 1, 0.2
+            spacing: [10]
+            padding: [10]
+
+            
+            BackgroundLabel:
+                font_size: 20
+                text: root.box1
+                
+                                        
+            BackgroundLabel:
+                font_size: 20
+                text: root.box2
+                
+
+            BackgroundLabel:
+                font_size: 20
+                text: root.box3
+                
+                
+            BackgroundLabel:
+                font_size:20 
+                text: root.box4
+                
+                
+            BackgroundLabel:
+                font_size:20 
+                text: root.box5
+                
+                
+        Button:
+            pos_hint:{"center_x": 0.5, "top":0.4}
+            size_hint: 0.3,0.2
+            background_normal: ''
+            background_color: rgba("#6200EE")
+            colour:0,0,0,1
+            halign: "center"
+            font_size: 37
+            text:"Display Queue"
+            on_release: root.print_booking()
+            
+        Label:
+            pos_hint:{"center_x": 0.5, "top":0.2}
+            size_hint: 1,0.2
+            font_size: 25
+            text: "Press Home to Exit"
